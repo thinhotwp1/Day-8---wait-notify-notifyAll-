@@ -8,8 +8,7 @@ class SharedBuffer {
     private final Queue<Integer> buffer = new LinkedList<>();
     private final int capacity;
     private final Object lock = new Object(); // Đối tượng để khóa
-
-
+    
     public SharedBuffer(int capacity) {
         this.capacity = capacity;
     }
@@ -28,8 +27,10 @@ class SharedBuffer {
             System.out.println("Producer [" + Thread.currentThread().getName() + "] đã thêm: " + item);
 
             // 4. Đánh thức TẤT CẢ các luồng đang chờ (có thể là Consumer)
-            lock.notify();
-            if(item == 0){throw new InterruptedException("Stop !");}
+            lock.notifyAll();
+            if (item == 0) {
+                throw new InterruptedException("Stop !");
+            }
         }
     }
 
@@ -48,7 +49,7 @@ class SharedBuffer {
             System.out.println("Consumer [" + Thread.currentThread().getName() + "] đã lấy: " + item);
 
             // 4. Đánh thức TẤT CẢ các luồng đang chờ (có thể là Producer)
-            lock.notify();
+            lock.notifyAll();
         }
     }
 }
